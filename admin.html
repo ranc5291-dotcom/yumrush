@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>YumRush — Admin Panel</title>
+<link rel="stylesheet" href="admin.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Yum<span class="o">R</span><span class="r">u</span>sh 🔥</div>
+    <div class="login-sub">Admin Panel</div>
+    <div class="admin-tag">🔐 Admin Access Only</div>
+    <input type="email"    id="pwd-input" placeholder="Admin email"
+           onkeydown="if(event.key==='Enter') tryLogin()" style="letter-spacing:0"/>
+    <input type="password" id="pwd-pass"  placeholder="Password"
+           onkeydown="if(event.key==='Enter') tryLogin()"/>
+    <button class="login-btn" onclick="tryLogin()">Login →</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app" style="display:none">
+
+  <nav>
+    <div style="display:flex;align-items:center">
+      <div class="logo">Yum<span class="o">R</span><span class="r">u</span>sh 🔥</div>
+      <span class="admin-badge">Admin</span>
+      <span id="admin-name" style="font-size:.78rem;color:var(--muted);margin-left:.75rem"></span>
+    </div>
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="showPage('analytics-page',this)">📊 Analytics</button>
+      <button class="tab-btn" onclick="showPage('menu-page',this)">🍽️ Menu</button>
+      <button class="tab-btn" onclick="showPage('orders-page',this)">📋 Orders</button>
+      <button class="tab-btn" onclick="showPage('reviews-page',this)">⭐ Reviews</button>
+      <button class="tab-btn" onclick="showPage('support-page',this)">🎧 Support Queries</button>
+    </div>
+    <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+  </nav>
+
+  <!-- ── ANALYTICS PAGE ── -->
+  <div class="page active" id="analytics-page">
+    <div class="section-title">📊 Analytics Dashboard</div>
+
+    <!-- KPI Cards -->
+    <div class="analytics-grid" id="stats-grid">
+      <div class="empty-state" style="grid-column:1/-1">
+        <div class="icon">📊</div><p>Loading analytics…</p>
+      </div>
+    </div>
+
+    <!-- Row 1: Orders + Category -->
+    <div class="charts-row">
+      <div class="chart-box">
+        <h4>🍽️ Items Ordered (All Time)</h4>
+        <div class="chart-wrap"><canvas id="itemsChart"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <h4>🗂️ Orders by Category</h4>
+        <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Row 2: Revenue + Peak Hours -->
+    <div class="charts-row">
+      <div class="chart-box">
+        <h4>💰 Revenue per Item</h4>
+        <div class="chart-wrap"><canvas id="revenueChart"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <h4>⏰ Peak Order Hours</h4>
+        <div class="chart-wrap"><canvas id="hoursChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Row 3: Daily Trend + Review Sentiment -->
+    <div class="charts-row">
+      <div class="chart-box">
+        <h4>📈 Daily Trend (Last 14 Days)</h4>
+        <div class="chart-wrap"><canvas id="dailyChart"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <h4>⭐ Review Sentiment Breakdown</h4>
+        <div class="chart-wrap"><canvas id="sentimentChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Top Customers -->
+    <div id="top-customers-box"></div>
+  </div>
+
+  <!-- ── MENU MANAGEMENT PAGE ── -->
+  <div class="page" id="menu-page">
+    <div class="section-title">🍽️ Menu Management</div>
+    <div class="add-form">
+      <h3>➕ Add New Menu Item</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Item Name</label>
+          <input type="text" id="new-name" placeholder="e.g. Paneer Pizza"/>
+        </div>
+        <div class="form-group">
+          <label>Price (₹)</label>
+          <input type="number" id="new-price" placeholder="299"/>
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="new-category">
+            <option value="Pizza">🍕 Pizza</option>
+            <option value="Burger">🍔 Burger</option>
+            <option value="Biryani">🍛 Biryani</option>
+            <option value="Sandwich">🥪 Sandwich</option>
+            <option value="Pasta">🍝 Pasta</option>
+            <option value="Coffee">☕ Coffee</option>
+            <option value="Drink">🥤 Drink</option>
+            <option value="Dessert">🍰 Dessert</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Available?</label>
+          <select id="new-avail">
+            <option value="true">✅ Yes</option>
+            <option value="false">❌ No</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="addMenuItem()">➕ Add Item</button>
+    </div>
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="menu-search" placeholder="Search items…" oninput="filterMenuTable()"/>
+      </div>
+      <select id="menu-cat-filter" onchange="filterMenuTable()">
+        <option value="">All Categories</option>
+        <option value="Pizza">Pizza</option>
+        <option value="Burger">Burger</option>
+        <option value="Biryani">Biryani</option>
+        <option value="Sandwich">Sandwich</option>
+        <option value="Pasta">Pasta</option>
+        <option value="Coffee">Coffee</option>
+        <option value="Drink">Drink</option>
+        <option value="Dessert">Dessert</option>
+      </select>
+      <select id="menu-avail-filter" onchange="filterMenuTable()">
+        <option value="">All</option>
+        <option value="true">Available</option>
+        <option value="false">Unavailable</option>
+      </select>
+    </div>
+    <table class="menu-table">
+      <thead>
+        <tr>
+          <th>ID</th><th>Name</th><th>Category</th>
+          <th>Price</th><th>Availability</th><th>Rating</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="menu-tbody">
+        <tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--muted)">Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── ORDERS PAGE ── -->
+  <div class="page" id="orders-page">
+    <div class="section-title">📋 All Orders</div>
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="order-search" placeholder="Search by customer name…" oninput="loadOrders()"/>
+      </div>
+      <select id="order-sort" onchange="loadOrders()">
+        <option value="desc">Price ↓ Highest first</option>
+        <option value="asc">Price ↑ Lowest first</option>
+      </select>
+      <button class="btn-primary" onclick="loadOrders()">🔄 Refresh</button>
+    </div>
+    <div id="orders-container">
+      <div class="empty-state"><div class="icon">📋</div><p>No orders yet.</p></div>
+    </div>
+  </div>
+
+  <!-- ── REVIEWS PAGE ── -->
+  <div class="page" id="reviews-page">
+    <div class="section-title">⭐ Customer Reviews</div>
+    <div class="rev-stats-grid" id="rev-stats"></div>
+    <div class="rev-filter-tabs">
+      <button class="rev-filter-btn active-all" id="rev-tab-all"   onclick="renderReviews('all')">All Reviews</button>
+      <button class="rev-filter-btn"             id="rev-tab-positive" onclick="renderReviews('positive')">👍 Positive</button>
+      <button class="rev-filter-btn"             id="rev-tab-negative" onclick="renderReviews('negative')">👎 Negative</button>
+      <button class="rev-filter-btn"             id="rev-tab-neutral"  onclick="renderReviews('neutral')">😐 Neutral</button>
+    </div>
+    <div id="rev-list">
+      <div class="empty-state"><div class="icon">📝</div><p>No reviews yet.</p></div>
+    </div>
+  </div>
+
+</div>
+
+  <!-- ── SUPPORT QUERIES PAGE ── -->
+  <div class="page" id="support-page">
+    <div class="section-title">🎧 Customer Support Queries</div>
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="support-search" placeholder="Search by customer or message…" oninput="filterSupport()"/>
+      </div>
+      <button class="btn-primary" onclick="loadSupport()">🔄 Refresh</button>
+    </div>
+    <div id="support-stats" style="display:flex;gap:1rem;margin-bottom:1.5rem"></div>
+    <div id="support-list">
+      <div class="empty-state"><div class="icon">🎧</div><p>No support queries yet.</p></div>
+    </div>
+  </div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <h3>✏️ Edit Menu Item</h3>
+    <input type="hidden" id="edit-id"/>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Price (₹)</label>
+        <input type="number" id="edit-price" placeholder="Price"/>
+      </div>
+      <div class="form-group">
+        <label>Available?</label>
+        <select id="edit-avail">
+          <option value="true">✅ Yes — Available</option>
+          <option value="false">❌ No — Unavailable</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" style="flex:1" onclick="saveEdit()">💾 Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"><span id="t-icon">✅</span> <span id="toast-msg"></span></div>
+<script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>YumRush — Food Delivery</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- LANDING -->
+<section id="landing">
+  <div class="landing-badge">🚀 Fast Delivery · Always Fresh · AI Powered</div>
+  <h1 class="landing-title">
+    <span class="yr-orange">Yum</span><span class="yr-yellow">Rush</span>
+  </h1>
+  <p class="landing-sub">Hot food delivered to your door in under 45 minutes.</p>
+  <div class="landing-actions">
+    <button class="btn-landing primary"   onclick="goToLogin()">🍕 Order Now</button>
+    <button class="btn-landing secondary" onclick="goToLogin()">Login / Sign Up →</button>
+  </div>
+  <div class="landing-features">
+    <div class="lf-item">🤖 AI Recommendations</div>
+    <div class="lf-sep">·</div>
+    <div class="lf-item">🎯 Spin Wheel</div>
+    <div class="lf-sep">·</div>
+    <div class="lf-item">🏥 Health Aware</div>
+    <div class="lf-sep">·</div>
+    <div class="lf-item">🎙️ Voice Order</div>
+    <div class="lf-sep">·</div>
+    <div class="lf-item">⚡ Dynamic Pricing</div>
+  </div>
+  <div class="scroll-hint"><span>↓</span><span>Scroll or click Order Now</span></div>
+</section>
+
+<!-- NAV -->
+<nav id="nav-bar" style="display:none">
+  <div class="logo">Yum<span class="o">R</span><span class="r">u</span>sh 🔥</div>
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="showPage('menu-page',this)">🍽️ Menu</button>
+    <button class="tab-btn" onclick="showPage('recs-page',this)">✨ For You</button>
+    <button class="tab-btn" onclick="showPage('health-page',this)">🥗 Health</button>
+    <button class="tab-btn" onclick="showPage('spin-page',this)">🎯 Spin</button>
+    <button class="tab-btn" onclick="showPage('favs-page',this)">❤️ Saved</button>
+    <button class="tab-btn" onclick="showPage('orders-page',this)">📋 Orders</button>
+  </div>
+  <div style="display:flex;gap:.6rem;align-items:center">
+    <!-- Voice buttons -->
+    <div class="voice-btn-group">
+      <button class="voice-btn" onclick="startVoiceOrder()" title="Search &amp; add items">🎙️</button>
+      <button class="voice-cmd-btn" onclick="startCommandMic()" id="voice-btn"
+              title="Voice commands: say 'add biryani to cart' or 'checkout'">⚡</button>
+    </div>
+    <!-- Cart -->
+    <button class="cart-badge" onclick="showPage('cart-page',null)">
+      🛒 <span class="badge" id="cart-count">0</span>
+    </button>
+    <!-- User avatar / profile -->
+    <div class="nav-user" id="nav-user" onclick="toggleUserMenu()">
+      <div class="nav-avatar" id="nav-avatar">?</div>
+      <div class="user-dropdown" id="user-dropdown" style="display:none">
+        <div class="user-dd-name"  id="user-dd-name">Guest</div>
+        <div class="user-dd-email" id="user-dd-email"></div>
+        <div class="user-dd-role"  id="user-dd-role"></div>
+        <div class="user-dd-divider"></div>
+        <button class="user-dd-btn" onclick="showPage('orders-page',null);toggleUserMenu()">📋 My Orders</button>
+        <button class="user-dd-btn" onclick="showPage('health-page',null);toggleUserMenu()">🥗 Health Profile</button>
+        <div class="user-dd-divider"></div>
+        <button class="user-dd-btn danger" onclick="doLogout()">🚪 Logout</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- PRICING STATUS BAR -->
+<div id="pricing-bar" style="display:none"></div>
+
+<!-- APP PAGES -->
+<div id="app-pages" style="display:none">
+
+  <!-- ── MENU PAGE ── -->
+  <div class="page active" id="menu-page">
+    <!-- AI Mood Recommender -->
+    <div class="ai-box" style="max-width:1100px;margin:1.5rem auto 0">
+      <div class="ai-label">🤖 AI Food Recommender</div>
+      <div style="font-size:.82rem;color:var(--muted);margin-bottom:.75rem">How are you feeling right now?</div>
+      <div class="ai-chips">
+        <!-- Original chips -->
+        <span class="ai-chip" onclick="selectMood(this,'very hungry 😋')">Very Hungry 😋</span>
+        <span class="ai-chip" onclick="selectMood(this,'a bit snacky 🍟')">Snacky 🍟</span>
+        <span class="ai-chip" onclick="selectMood(this,'want something sweet 🍰')">Sweet Craving 🍰</span>
+        <span class="ai-chip" onclick="selectMood(this,'thirsty 🥤')">Thirsty 🥤</span>
+        <span class="ai-chip" onclick="selectMood(this,'want something light and healthy')">Light Bite 🥗</span>
+        <span class="ai-chip" onclick="selectMood(this,'want comfort food')">Comfort Food 🍕</span>
+        <span class="ai-chip" onclick="selectMood(this,'want a rice dish')">Rice Craving 🍛</span>
+        <span class="ai-chip" onclick="selectMood(this,'need caffeine boost')">Need Coffee ☕</span>
+        <span class="ai-chip" onclick="selectMood(this,'want something spicy and bold')">Spicy 🌶️</span>
+        <span class="ai-chip" onclick="selectMood(this,'want a protein rich meal for fitness')">Post Workout 💪</span>
+        <!-- New chips -->
+        <span class="ai-chip" onclick="selectMood(this,'anything 🍽️')">Any Food 🍽️</span>
+        <span class="ai-chip" onclick="selectMood(this,'surprise me 🎲')">Surprise Me 🎲</span>
+        <span class="ai-chip" onclick="selectMood(this,'want indian food 🇮🇳')">Indian Food 🇮🇳</span>
+        <span class="ai-chip" onclick="selectMood(this,'want something cheesy 🧀')">Cheesy 🧀</span>
+        <span class="ai-chip" onclick="selectMood(this,'want something veg 🌿')">Vegetarian 🌿</span>
+        <span class="ai-chip" onclick="selectMood(this,'want a quick bite 🏃')">Quick Bite 🏃</span>
+        <span class="ai-chip" onclick="selectMood(this,'feeling bored 😑')">Bored 😑</span>
+      </div>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center">
+        <button class="btn-coupon" id="rec-btn" onclick="getAIRecommendation()"
+                style="opacity:.5;cursor:not-allowed" disabled>✨ Recommend for me</button>
+        <button class="btn-coupon" style="background:var(--surface);border:1px solid var(--border);color:var(--text)"
+                onclick="showPage('spin-page',null)">🎯 Spin the Wheel</button>
+      </div>
+      <div class="ai-thinking" id="rec-thinking">
+        <div class="dot-pulse"><span></span><span></span><span></span></div> AI is thinking…
+      </div>
+      <div class="ai-result" id="rec-result"></div>
+    </div>
+
+    <div style="max-width:1100px;margin:0 auto;padding:1.5rem 2rem 0">
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search-input" placeholder="Search dishes, categories, tags…" oninput="applyFilters()"/>
+        </div>
+        <select id="avail-filter" onchange="applyFilters()">
+          <option value="">All Items</option>
+          <option value="true">Available</option>
+          <option value="false">Unavailable</option>
+        </select>
+        <select id="sort-filter" onchange="applyFilters()">
+          <option value="price-asc">Price ↑</option>
+          <option value="price-desc">Price ↓</option>
+          <option value="name-asc">Name A–Z</option>
+          <option value="calories-asc">Calories ↑</option>
+        </select>
+        <select id="tag-filter" onchange="applyFilters()">
+          <option value="">All Tags</option>
+          <option value="veg">🌿 Veg</option>
+          <option value="non-veg">🍗 Non-Veg</option>
+          <option value="high-protein">💪 High Protein</option>
+          <option value="keto">🥑 Keto</option>
+          <option value="low-cal">🔆 Low Calorie</option>
+          <option value="healthy">❤️ Healthy</option>
+          <option value="spicy">🌶️ Spicy</option>
+          <option value="sweet">🍭 Sweet</option>
+          <option value="premium">⭐ Premium</option>
+          <option value="classic">🏅 Classic</option>
+        </select>
+        <input type="number" id="max-price" placeholder="Max ₹" style="width:90px" oninput="applyFilters()"/>
+      </div>
+
+      <!-- Category Tabs -->
+      <div class="cat-tabs" id="cat-tabs"></div>
+
+      <div class="section-title">Menu <span id="item-count-label"></span></div>
+      <div class="menu-grid stagger" id="menu-grid">
+        <div class="empty-state"><div class="icon">🍽️</div><p>Loading menu…</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FOR YOU PAGE ── -->
+  <div class="page" id="recs-page">
+    <div class="section-title">✨ Recommendations For You</div>
+    <div id="recs-content">
+      <div class="empty-state"><div class="icon">✨</div><p>Loading…</p></div>
+    </div>
+  </div>
+
+  <!-- ── HEALTH PAGE ── -->
+  <div class="page" id="health-page">
+    <div class="section-title">🥗 Health-Aware Ordering</div>
+    <div class="health-setup" id="health-setup">
+      <div class="health-card">
+        <div class="health-card-title">⚙️ Set Your Health Profile</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Your Name</label>
+            <input type="text" id="h-name" placeholder="Your name"/>
+          </div>
+          <div class="form-group">
+            <label>Daily Calorie Goal</label>
+            <input type="number" id="h-calories" placeholder="2000" min="500" max="5000"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Diet Type</label>
+            <select id="h-diet">
+              <option value="any">🍽️ Any / No Restriction</option>
+              <option value="veg">🌿 Vegetarian</option>
+              <option value="vegan">🌱 Vegan</option>
+              <option value="keto">🥑 Keto / Low Carb</option>
+              <option value="high-protein">💪 High Protein</option>
+              <option value="low-carb">🥦 Low Carb</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Health Goal</label>
+            <select id="h-goal">
+              <option value="balanced">⚖️ Balanced</option>
+              <option value="weight-loss">📉 Weight Loss</option>
+              <option value="muscle-gain">💪 Muscle Gain</option>
+              <option value="diabetic">💊 Diabetic Friendly</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="saveHealthProfile()">💾 Save Profile & Get Suggestions</button>
+      </div>
+    </div>
+    <div id="health-suggestions" style="margin-top:1.5rem"></div>
+    <div id="health-advice-box" style="margin-top:1rem"></div>
+  </div>
+
+  <!-- ── SPIN WHEEL PAGE ── -->
+  <div class="page" id="spin-page">
+    <div class="section-title">🎯 What Should I Eat?</div>
+    <div class="spin-container">
+      <div class="spin-filters">
+        <div style="font-size:.82rem;color:var(--muted);margin-bottom:.75rem;letter-spacing:.5px">Filter your spin:</div>
+        <div class="spin-filter-btns" id="spin-filters">
+          <button class="spin-filter active" onclick="setSpinFilter('any',this)">🍽️ Any</button>
+          <button class="spin-filter" onclick="setSpinFilter('veg',this)">🌿 Veg</button>
+          <button class="spin-filter" onclick="setSpinFilter('non-veg',this)">🍗 Non-Veg</button>
+          <button class="spin-filter" onclick="setSpinFilter('cheap',this)">💰 Cheap</button>
+          <button class="spin-filter" onclick="setSpinFilter('healthy',this)">❤️ Healthy</button>
+          <button class="spin-filter" onclick="setSpinFilter('spicy',this)">🌶️ Spicy</button>
+          <button class="spin-filter" onclick="setSpinFilter('sweet',this)">🍭 Sweet</button>
+          <button class="spin-filter" onclick="setSpinFilter('high-protein',this)">💪 High Protein</button>
+          <button class="spin-filter" onclick="setSpinFilter('premium',this)">⭐ Premium</button>
+        </div>
+      </div>
+
+      <!-- Wheel Visual -->
+      <div class="wheel-wrap">
+        <div class="wheel" id="spin-wheel">
+          <div class="wheel-inner">
+            <div class="wheel-emoji" id="wheel-emoji">🎯</div>
+          </div>
+        </div>
+        <button class="spin-btn" id="spin-btn" onclick="doSpin()">
+          <span id="spin-btn-text">SPIN!</span>
+        </button>
+      </div>
+
+      <!-- Spin Result -->
+      <div class="spin-result" id="spin-result" style="display:none">
+        <div class="spin-result-header">🎉 The Wheel Chose!</div>
+        <div id="spin-main-item"></div>
+        <div class="spin-combo-title">🍽️ Perfect Combo</div>
+        <div id="spin-combo"></div>
+        <div id="spin-total"></div>
+        <div style="display:flex;gap:.75rem;margin-top:1rem;flex-wrap:wrap">
+          <button class="btn-primary" style="flex:1" onclick="addSpinToCart()">🛒 Add Combo to Cart</button>
+          <button class="btn-coupon" style="background:var(--surface);border:1px solid var(--border);color:var(--text)" onclick="doSpin()">🔄 Spin Again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FAVOURITES PAGE ── -->
+  <div class="page" id="favs-page">
+    <div class="section-title">❤️ Your Favourites</div>
+    <div class="menu-grid stagger" id="favs-grid">
+      <div class="empty-state"><div class="icon">❤️</div><p>No favourites yet!</p></div>
+    </div>
+  </div>
+
+  <!-- ── CART PAGE ── -->
+  <div class="page" id="cart-page">
+    <div class="section-title">🛒 Your Cart</div>
+    <div id="cart-content">
+      <div class="cart-empty"><div class="big-icon">🛒</div><p>Your cart is empty!</p></div>
+    </div>
+  </div>
+
+  <!-- ── MY ORDERS PAGE ── -->
+  <div class="page" id="orders-page">
+    <div class="section-title">📋 My Orders</div>
+    <div id="orders-container">
+      <div class="empty-state"><div class="icon">📋</div><p>No orders yet. Go explore the menu! 🍕</p></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- VOICE ORDER MODAL -->
+<div class="modal-overlay" id="voice-modal">
+  <div class="voice-modal">
+
+    <!-- Header -->
+    <div class="vm-header">
+      <div>
+        <div class="vm-title">🎙️ Voice Order</div>
+        <div class="vm-sub">Speak your full order — add all items at once</div>
+      </div>
+      <button class="vm-close" onclick="closeVoiceModal()">✕</button>
+    </div>
+
+    <!-- Big mic button -->
+    <div style="text-align:center;padding:.5rem 0">
+      <button class="vm-mic-big" id="vm-mic-btn" onclick="toggleVoiceMic()">
+        <span id="vm-mic-icon">🎙️</span>
+        <span id="vm-mic-label">Tap to speak your order</span>
+      </button>
+    </div>
+
+    <!-- What was heard -->
+    <div class="vm-heard-box" id="vm-heard-box" style="display:none">
+      <div class="vm-heard-label">🎙️ You said:</div>
+      <div class="vm-heard-text" id="vm-heard-text"></div>
+    </div>
+
+    <!-- Parsed items preview -->
+    <div class="vm-parsed-box" id="vm-parsed-box" style="display:none">
+      <div class="vm-parsed-label">Found these items — confirm to add all:</div>
+      <div id="vm-parsed-items"></div>
+      <button class="vm-add-all-btn" id="vm-add-all-btn" onclick="addAllParsedToCart()">
+        ✅ Add All to Cart
+      </button>
+    </div>
+
+    <!-- OR manual search -->
+    <div class="vm-divider"><span>or search manually</span></div>
+
+    <div class="vm-search-row">
+      <div class="vm-search-wrap" style="flex:1">
+        <input id="vm-search" type="text" placeholder="Type item name… e.g. biryani, pizza"
+               oninput="voiceSearch(this.value)" autocomplete="off"/>
+        <button class="vm-clear" onclick="clearVoiceSearch()" id="vm-clear" style="display:none">✕</button>
+      </div>
+    </div>
+
+    <!-- Search results -->
+    <div class="vm-search-results" id="vm-search-results" style="display:none"></div>
+
+    <!-- Basket -->
+    <div class="vm-basket-label" id="vm-basket-label" style="display:none">🛒 Added to Cart</div>
+    <div class="vm-basket" id="vm-basket"></div>
+    <div class="vm-total" id="vm-total" style="display:none"></div>
+
+    <!-- Quick picks -->
+    <div id="vm-quick">
+      <div class="vm-quick-label">Quick Picks</div>
+      <div class="vm-quick-grid" id="vm-quick-grid"></div>
+    </div>
+
+    <!-- Actions -->
+    <div class="vm-actions">
+      <button class="vm-cancel" onclick="closeVoiceModal()">Close</button>
+      <button class="vm-confirm" id="vm-confirm-btn" onclick="confirmVoiceBasket()" disabled>
+        View Cart <span id="vm-confirm-count"></span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- SUPPORT BUBBLE -->
+<div id="support-bubble" onclick="toggleSupport()" title="Customer Support">
+  <span class="support-icon">🎧</span>
+  <span class="support-pulse"></span>
+</div>
+
+<!-- SUPPORT WINDOW -->
+<div id="support-window">
+  <div class="support-header">
+    <div class="support-header-left">
+      <span class="support-avatar">🎧</span>
+      <div>
+        <div class="support-name">YumRush Support</div>
+        <div class="support-status">● AI Powered</div>
+      </div>
+    </div>
+    <button class="support-close" onclick="toggleSupport()">✕</button>
+  </div>
+  <div class="support-messages" id="support-messages">
+    <div class="support-msg bot">
+      <span class="msg-avatar">🎧</span>
+      <div class="msg-bubble">Hi! 👋 I'm your YumRush support assistant. Ask me anything about menu, orders, delivery, coupons, health features, or anything else!</div>
+    </div>
+  </div>
+  <div class="support-quick-btns" id="support-quick">
+    <button onclick="quickSupport('What coupons are available?')">🎟️ Coupons</button>
+    <button onclick="quickSupport('What is the delivery charge?')">🚚 Delivery</button>
+    <button onclick="quickSupport('How does dynamic pricing work?')">⚡ Pricing</button>
+    <button onclick="quickSupport('How do I use the spin wheel?')">🎯 Spin</button>
+  </div>
+  <div class="support-input-row">
+    <input type="text" id="support-input" placeholder="Type your question…"
+           onkeydown="if(event.key==='Enter') sendSupportMsg()"/>
+    <button class="support-send" onclick="sendSupportMsg()">➤</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"><span id="t-icon">✅</span> <span id="toast-msg"></span></div>
+
+<script src="app.js"></script>
+</body>
+</html>

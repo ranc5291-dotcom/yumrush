@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>YumRush — Login</title>
+<link rel="stylesheet" href="style.css"/>
+<style>
+/* ── Auth Page Specific Styles ── */
+body { display:flex; align-items:center; justify-content:center; min-height:100vh; }
+
+.auth-wrap {
+  width:100%; max-width:420px; padding:1.5rem;
+  animation: fadeUp .5s ease both;
+}
+
+.auth-logo {
+  font-family:'Syne',sans-serif; font-size:2.2rem; font-weight:800;
+  letter-spacing:-2px; text-align:center; margin-bottom:.25rem;
+}
+.auth-logo .o { color:#f97316; }
+.auth-logo .r { color:#fbbf24; }
+
+.auth-tagline {
+  text-align:center; color:var(--muted); font-size:.85rem; margin-bottom:2rem;
+}
+
+.auth-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:20px; padding:2rem;
+  box-shadow:0 24px 64px rgba(0,0,0,.4);
+}
+
+/* Tabs */
+.auth-tabs {
+  display:flex; background:var(--surface); border-radius:12px;
+  padding:4px; gap:4px; margin-bottom:1.75rem;
+}
+.auth-tab {
+  flex:1; padding:.55rem; border-radius:9px; border:none;
+  background:none; color:var(--muted); font-family:'DM Sans',sans-serif;
+  font-size:.88rem; font-weight:600; cursor:pointer; transition:all .2s;
+}
+.auth-tab.active {
+  background:var(--accent); color:#fff;
+  box-shadow:0 4px 12px rgba(249,115,22,.3);
+}
+
+/* Form */
+.auth-form { display:flex; flex-direction:column; gap:.85rem; }
+
+.auth-field { display:flex; flex-direction:column; gap:.35rem; }
+.auth-label {
+  font-size:.74rem; letter-spacing:.8px; text-transform:uppercase;
+  color:var(--muted); font-weight:600;
+}
+.auth-input {
+  padding:.75rem 1rem; background:var(--surface); border:2px solid var(--border);
+  color:var(--text); border-radius:12px; font-family:inherit;
+  font-size:.92rem; transition:border-color .2s, box-shadow .2s; width:100%;
+}
+.auth-input:focus {
+  outline:none; border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(249,115,22,.12);
+}
+.auth-input.error { border-color:var(--danger); }
+
+.auth-input-wrap { position:relative; }
+.auth-input-wrap .auth-input { padding-right:2.8rem; }
+.auth-eye {
+  position:absolute; right:.85rem; top:50%; transform:translateY(-50%);
+  background:none; border:none; cursor:pointer; color:var(--muted);
+  font-size:.95rem; padding:0; transition:color .2s;
+}
+.auth-eye:hover { color:var(--text); }
+
+.auth-submit {
+  width:100%; padding:.85rem; border-radius:12px; border:none;
+  background:var(--accent); color:#fff;
+  font-family:'Syne',sans-serif; font-size:1rem; font-weight:700;
+  cursor:pointer; transition:all .2s; letter-spacing:.3px; margin-top:.25rem;
+}
+.auth-submit:hover { background:#ea6c0e; transform:translateY(-1px); box-shadow:0 6px 20px rgba(249,115,22,.35); }
+.auth-submit:disabled { background:var(--border); color:var(--muted); cursor:not-allowed; transform:none; box-shadow:none; }
+
+.auth-error {
+  background:rgba(248,113,113,.1); border:1px solid rgba(248,113,113,.3);
+  color:var(--danger); border-radius:10px; padding:.65rem .9rem;
+  font-size:.84rem; display:none;
+}
+.auth-error.show { display:block; animation:fadeUp .2s ease both; }
+
+.auth-success {
+  background:rgba(74,222,128,.1); border:1px solid rgba(74,222,128,.3);
+  color:var(--success); border-radius:10px; padding:.65rem .9rem;
+  font-size:.84rem; display:none;
+}
+.auth-success.show { display:block; animation:fadeUp .2s ease both; }
+
+.auth-divider {
+  display:flex; align-items:center; gap:.75rem; margin:.25rem 0;
+  color:var(--muted); font-size:.78rem;
+}
+.auth-divider::before, .auth-divider::after {
+  content:''; flex:1; height:1px; background:var(--border);
+}
+
+.auth-guest {
+  width:100%; padding:.75rem; border-radius:12px;
+  border:1px solid var(--border); background:var(--surface);
+  color:var(--text); font-family:'DM Sans',sans-serif;
+  font-size:.88rem; cursor:pointer; transition:all .2s;
+}
+.auth-guest:hover { border-color:var(--accent); color:var(--accent); }
+
+.auth-footer {
+  text-align:center; margin-top:1.25rem; font-size:.78rem; color:var(--muted);
+}
+
+</style>
+</head>
+<body>
+
+<div class="auth-wrap">
+  <!-- Logo -->
+  <div class="auth-logo">Yum<span class="o">R</span><span class="r">u</span>sh 🔥</div>
+  <div class="auth-tagline">Hot food · Fast delivery · AI powered</div>
+
+  <div class="auth-card">
+    <!-- Tabs -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login"    onclick="switchTab('login')">Login</button>
+      <button class="auth-tab"        id="tab-register" onclick="switchTab('register')">Sign Up</button>
+    </div>
+
+    <!-- Error / Success -->
+    <div class="auth-error"   id="auth-error"></div>
+    <div class="auth-success" id="auth-success"></div>
+
+    <!-- ── LOGIN FORM ── -->
+    <form class="auth-form" id="login-form" onsubmit="doLogin(event)">
+      <div class="auth-field">
+        <label class="auth-label">Email</label>
+        <input class="auth-input" type="email" id="login-email"
+               placeholder="you@example.com" required autocomplete="email"/>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Password</label>
+        <div class="auth-input-wrap">
+          <input class="auth-input" type="password" id="login-password"
+                 placeholder="Your password" required autocomplete="current-password"/>
+          <button type="button" class="auth-eye" onclick="togglePwd('login-password',this)">👁</button>
+        </div>
+      </div>
+      <button class="auth-submit" type="submit" id="login-btn">Login →</button>
+
+      <div class="auth-divider">or</div>
+      <button type="button" class="auth-guest" onclick="guestLogin()">
+        👤 Continue as Guest
+      </button>
+    </form>
+
+    <!-- ── REGISTER FORM ── -->
+    <form class="auth-form" id="register-form" style="display:none" onsubmit="doRegister(event)">
+      <div class="auth-field">
+        <label class="auth-label">Full Name</label>
+        <input class="auth-input" type="text" id="reg-name"
+               placeholder="e.g. Arjun Sharma" required minlength="2" autocomplete="name"/>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Email</label>
+        <input class="auth-input" type="email" id="reg-email"
+               placeholder="you@example.com" required autocomplete="email"/>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Password <span style="color:var(--muted);font-size:.7rem">(min 6 characters)</span></label>
+        <div class="auth-input-wrap">
+          <input class="auth-input" type="password" id="reg-password"
+                 placeholder="Create a password" required minlength="6" autocomplete="new-password"/>
+          <button type="button" class="auth-eye" onclick="togglePwd('reg-password',this)">👁</button>
+        </div>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Confirm Password</label>
+        <div class="auth-input-wrap">
+          <input class="auth-input" type="password" id="reg-confirm"
+                 placeholder="Repeat your password" required autocomplete="new-password"/>
+          <button type="button" class="auth-eye" onclick="togglePwd('reg-confirm',this)">👁</button>
+        </div>
+      </div>
+      <button class="auth-submit" type="submit" id="register-btn">Create Account →</button>
+
+      <div class="auth-divider">or</div>
+      <button type="button" class="auth-guest" onclick="guestLogin()">
+        👤 Continue as Guest
+      </button>
+    </form>
+  </div>
+
+  <div class="auth-footer">
+    By continuing you agree to our Terms of Service
+  </div>
+</div>
+
+<script>
+const API = 'http://127.0.0.1:8000';
+
+// ── Tab switch ──────────────────────────────────────
+function switchTab(tab) {
+  document.getElementById('login-form').style.display    = tab==='login'    ? 'flex' : 'none';
+  document.getElementById('register-form').style.display = tab==='register' ? 'flex' : 'none';
+  document.getElementById('tab-login').classList.toggle('active',    tab==='login');
+  document.getElementById('tab-register').classList.toggle('active', tab==='register');
+  clearMessages();
+}
+
+// ── Show error / success ───────────────────────────
+function showError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = '❌ ' + msg; el.classList.add('show');
+  document.getElementById('auth-success').classList.remove('show');
+}
+function showSuccess(msg) {
+  const el = document.getElementById('auth-success');
+  el.textContent = '✅ ' + msg; el.classList.add('show');
+  document.getElementById('auth-error').classList.remove('show');
+}
+function clearMessages() {
+  document.getElementById('auth-error').classList.remove('show');
+  document.getElementById('auth-success').classList.remove('show');
+}
+
+// ── Toggle password visibility ─────────────────────
+function togglePwd(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (input.type === 'password') { input.type = 'text';     btn.textContent = '🙈'; }
+  else                           { input.type = 'password'; btn.textContent = '👁'; }
+}
+
+// ── Save auth and redirect ─────────────────────────
+function saveAndRedirect(data) {
+  localStorage.setItem('yr_token', data.token);
+  localStorage.setItem('yr_user',  JSON.stringify(data.user));
+  sessionStorage.setItem('yumrush_customer', data.user.name);
+  showSuccess(`Welcome, ${data.user.name}! Taking you to the menu…`);
+  setTimeout(() => {
+    window.location.replace('index.html');  // replace so back button doesn't return to login
+  }, 800);
+}
+
+// ── LOGIN ──────────────────────────────────────────
+async function doLogin(e) {
+  e.preventDefault();
+  clearMessages();
+  const btn   = document.getElementById('login-btn');
+  const email = document.getElementById('login-email').value.trim();
+  const pwd   = document.getElementById('login-password').value;
+  btn.disabled = true; btn.textContent = 'Logging in…';
+  try {
+    const res  = await fetch(`${API}/auth/login`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ email, password: pwd })
+    });
+    const data = await res.json();
+    if (!res.ok) { showError(data.detail || 'Login failed'); return; }
+    saveAndRedirect(data);
+  } catch { showError('Cannot connect to server. Is FastAPI running?'); }
+  finally  { btn.disabled = false; btn.textContent = 'Login →'; }
+}
+
+// ── REGISTER ───────────────────────────────────────
+async function doRegister(e) {
+  e.preventDefault();
+  clearMessages();
+  const name    = document.getElementById('reg-name').value.trim();
+  const email   = document.getElementById('reg-email').value.trim();
+  const pwd     = document.getElementById('reg-password').value;
+  const confirm = document.getElementById('reg-confirm').value;
+  if (pwd !== confirm) { showError('Passwords do not match'); return; }
+  const btn = document.getElementById('register-btn');
+  btn.disabled = true; btn.textContent = 'Creating account…';
+  try {
+    const res  = await fetch(`${API}/auth/register`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ name, email, password: pwd })
+    });
+    const data = await res.json();
+    if (!res.ok) { showError(data.detail || 'Registration failed'); return; }
+    saveAndRedirect(data);
+  } catch { showError('Cannot connect to server. Is FastAPI running?'); }
+  finally  { btn.disabled = false; btn.textContent = 'Create Account →'; }
+}
+
+// ── GUEST LOGIN ────────────────────────────────────
+function guestLogin() {
+  const guestName = 'Guest_' + Math.floor(Math.random() * 9000 + 1000);
+  localStorage.setItem('yr_token', '');
+  localStorage.setItem('yr_user',  JSON.stringify({name: guestName, email:'', role:'guest'}));
+  sessionStorage.setItem('yumrush_customer', guestName);
+  window.location.replace('index.html');
+}
+
+// ── Auto-redirect if already logged in ────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const user = localStorage.getItem('yr_user');
+  if (user) {
+    // Already logged in — go straight to app
+    window.location.href = 'index.html';
+  }
+});
+</script>
+</body>
+</html>

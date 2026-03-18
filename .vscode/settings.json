@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "YumRush",
+            "database": "${workspaceFolder:quickbite food app}/yumrush.db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}
