@@ -3,7 +3,7 @@
    JWT Auth + Database-connected orders
    ═══════════════════════════════════════════ */
 
-const API = 'http://127.0.0.1:8000';
+const API = 'https://yumrush-20a0.onrender.com';
 
 let allMenuItems = [];
 let allReviews   = [];
