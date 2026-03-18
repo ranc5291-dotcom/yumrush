@@ -244,7 +244,7 @@ function saveAndRedirect(data) {
   sessionStorage.setItem('yumrush_customer', data.user.name);
   showSuccess(`Welcome, ${data.user.name}! Taking you to the menu…`);
   setTimeout(() => {
-    window.location.replace('index.html');  // replace so back button doesn't return to login
+    window.location.replace('Index.html');  // replace so back button doesn't return to login
   }, 800);
 }
 
@@ -297,7 +297,7 @@ function guestLogin() {
   localStorage.setItem('yr_token', '');
   localStorage.setItem('yr_user',  JSON.stringify({name: guestName, email:'', role:'guest'}));
   sessionStorage.setItem('yumrush_customer', guestName);
-  window.location.replace('index.html');
+  window.location.replace('Index.html');
 }
 
 // ── Auto-redirect if already logged in ────────────
@@ -305,7 +305,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const user = localStorage.getItem('yr_user');
   if (user) {
     // Already logged in — go straight to app
-    window.location.href = 'index.html';
+    window.location.href = 'Index.html';
   }
 });
 </script>
