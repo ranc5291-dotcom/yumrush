@@ -268,7 +268,7 @@ def _check_pw(password: str, stored: str) -> bool:
         return False
 
 def _make_jwt(user_id: int, email: str, role: str) -> str:
-    header  = _b64u(json.dumps({"alg":"HS256","typ":"JWT"}).encode())
+    header  = _b64u(json.dumps({"alg":"HS256","typ":"JWT"}, separators=(",",":")).encode())
     payload = _b64u(json.dumps({
         "user_id": user_id, "email": email, "role": role,
         "exp": (datetime.utcnow() + timedelta(days=TOKEN_DAYS)).timestamp(),
