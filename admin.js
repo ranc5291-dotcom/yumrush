@@ -347,7 +347,7 @@ async function addMenuItem() {
   try {
     const res  = await fetch(`${API}/menu`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...authHeaders() },
       body: JSON.stringify({ name, price, category, is_available: avail }),
     });
     const data = await res.json();
