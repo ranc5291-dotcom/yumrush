@@ -39,7 +39,7 @@ groq_client  = Groq(api_key=GROQ_API_KEY) if GROQ_API_KEY else None
 
 DB_PATH    = os.getenv("DB_PATH", "yumrush.db")
 JWT_SECRET = os.getenv("JWT_SECRET", "yumrush-secret-key-change-in-production")
-TOKEN_DAYS = 7
+TOKEN_DAYS = 30
 
 # ════════════════════════════════════════════════════════════════════
 # ══ DATABASE — SQLite
