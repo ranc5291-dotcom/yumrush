@@ -253,7 +253,10 @@ def _b64u(data: bytes) -> str:
     return base64.urlsafe_b64encode(data).rstrip(b"=").decode()
 
 def _b64u_dec(s: str) -> bytes:
-    return base64.urlsafe_b64decode(s + "=" * (4 - len(s) % 4) % 4)
+    padding = 4 - len(s) % 4
+    if padding != 4:
+        s += "=" * padding
+    return base64.urlsafe_b64decode(s)
 
 def _hash_pw(password: str) -> str:
     salt = secrets.token_hex(16)
