@@ -273,7 +273,7 @@ def _make_jwt(user_id: int, email: str, role: str) -> str:
         "user_id": user_id, "email": email, "role": role,
         "exp": (datetime.utcnow() + timedelta(days=TOKEN_DAYS)).timestamp(),
         "iat": datetime.utcnow().timestamp(),
-    }).encode())
+    }, separators=(",",":")).encode())
     sig_in = f"{header}.{payload}".encode()
     sig    = _b64u(hmac.new(JWT_SECRET.encode(), sig_in, hashlib.sha256).digest())
     return f"{header}.{payload}.{sig}"
