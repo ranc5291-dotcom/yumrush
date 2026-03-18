@@ -8,7 +8,7 @@ const API = 'https://yumrush-20a0.onrender.com';
 let allMenuItems = [];
 let allReviews   = [];
 let charts       = {};
-let adminToken   = localStorage.getItem('admin_token') || '';
+let adminToken   = localStorage.getItem('token') || '';
 
 function authHeaders() {
   return { 'Content-Type':'application/json',
@@ -35,7 +35,7 @@ async function tryLogin() {
       errEl.textContent = '❌ Admin access only'; errEl.style.display='block'; return;
     }
     adminToken = data.token;
-    localStorage.setItem('admin_token', adminToken);
+    localStorage.setItem('token', adminToken);
     document.getElementById('admin-name').textContent = data.user.name;
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('main-app').style.display     = 'block';
