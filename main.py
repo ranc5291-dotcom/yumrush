@@ -447,7 +447,7 @@ def _parse_tags(s: str) -> list:
 
 def _dynamic_price(item: dict, is_raining: bool = False) -> int:
     base  = item["price"]
-    hour  = datetime.now().hour
+    hour  = datetime.now(IST).hour
     surge = 1.0
     if 12 <= hour <= 14 or 19 <= hour <= 21: surge += 0.10
     if hour >= 23 or hour < 4:               surge += 0.08
@@ -457,7 +457,7 @@ def _dynamic_price(item: dict, is_raining: bool = False) -> int:
     return int(base * surge)
 
 def _delivery_charge(subtotal: int, is_raining: bool = False) -> int:
-    hour = datetime.now().hour
+    hour = datetime.now(IST).hour
     late = hour >= 23 or hour < 5
     base = 0 if subtotal >= 150 else 30
     if is_raining: base += 20
@@ -465,7 +465,7 @@ def _delivery_charge(subtotal: int, is_raining: bool = False) -> int:
     return base
 
 def _delivery_notes(subtotal: int, is_raining: bool = False) -> List[str]:
-    hour  = datetime.now().hour
+    hour  = datetime.now(IST).hour
     late  = hour >= 23 or hour < 5
     notes = []
     if subtotal >= 150 and not is_raining and not late:
@@ -910,7 +910,7 @@ def checkout(req: CheckoutRequest, is_raining: bool = Query(False), response: Re
                VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""",
             (req.customer_name, req.customer_email, json.dumps(items_snapshot),
              subtotal, discount, coupon["discount_percent"], coupon["code"],
-             delivery, req.delivery_address, grand, total_cals, datetime.now().hour)
+             delivery, req.delivery_address, grand, total_cals, datetime.now(IST).hour)
         )
         order_id = cur.lastrowid
         for i in items:
@@ -1224,7 +1224,7 @@ def analytics(user=Depends(optional_user)):
 
 @app.get("/pricing/status")
 def pricing_status(is_raining: bool = Query(False)):
-    hour    = datetime.now().hour
+    hour    = datetime.now(IST).hour
     is_peak = (12 <= hour <= 14) or (19 <= hour <= 21)
     is_late = hour >= 23 or hour < 5
     return {
