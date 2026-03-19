@@ -22,6 +22,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from datetime import datetime, timedelta
+import pytz
+IST = pytz.timezone('Asia/Kolkata')
 from contextlib import asynccontextmanager
 from typing import Optional, List
 from collections import defaultdict
