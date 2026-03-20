@@ -1232,13 +1232,21 @@ async function doSpin() {
 
 async function addSpinToCart() {
   if (!lastSpinResult) return;
+  let added = 0;
   for (const item of lastSpinResult.combo) {
     if (item.is_available) {
-      await fetch(`${API}/cart/add?item_id=${item.id}&quantity=1`, {method:'POST'});
+      try {
+        const res = await fetch(
+          `${API}/cart/add?item_id=${item.id}&quantity=1&session=${encodeURIComponent(getSession())}&is_raining=${isRaining}`,
+          { method: 'POST', headers: getAuthHeaders() }
+        );
+        const d = await res.json();
+        if (!d.error) added++;
+      } catch {}
     }
   }
   await loadCart();
-  toast('🎯 Combo added to cart!');
+  toast(`🎯 ${added} combo items added to cart!`);
   showPage('cart-page', null);
 }
 
