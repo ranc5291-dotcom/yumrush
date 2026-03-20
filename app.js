@@ -1247,7 +1247,7 @@ async function addSpinToCart() {
   }
   await loadCart();
   toast(`🎯 ${added} combo items added to cart!`);
-  showPage('cart-page', null);
+  setTimeout(() => showPage('cart-page', null), 800);
 }
 
 // ══ VOICE ORDER — FIXED ══════════════════════════════════════════
