@@ -1245,9 +1245,12 @@ async function addSpinToCart() {
       } catch {}
     }
   }
-  await loadCart();
   toast(`🎯 ${added} combo items added to cart!`);
-  setTimeout(() => showPage('cart-page', null), 800);
+  // Wait for DB to finish writing, then reload cart and navigate
+  await new Promise(r => setTimeout(r, 1000));
+  await loadCart();
+  await new Promise(r => setTimeout(r, 300));
+  showPage('cart-page', null);
 }
 
 // ══ VOICE ORDER — FIXED ══════════════════════════════════════════
