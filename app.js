@@ -1215,8 +1215,23 @@ async function doSpin() {
         <span>₹${i.price}</span>
       </div>`).join('');
 
-    document.getElementById('spin-total').innerHTML =
-      `<div class="spin-combo-total">Combo Total: <strong>₹${data.combo_total}</strong></div>`;
+    const comboDiscount   = Math.round(data.combo_total * 0.10);
+const comboFinalPrice = data.combo_total - comboDiscount;
+document.getElementById('spin-total').innerHTML = `
+  <div class="spin-combo-total" style="display:flex;flex-direction:column;gap:.4rem;margin-top:.75rem">
+    <div style="display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted)">
+      <span>Original Price</span>
+      <span style="text-decoration:line-through">₹${data.combo_total}</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:.85rem;color:var(--success)">
+      <span>🎉 Combo Discount (10% off)</span>
+      <span>− ₹${comboDiscount}</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;padding-top:.4rem;border-top:1px solid var(--border)">
+      <span>You Pay</span>
+      <span style="color:var(--accent)">₹${comboFinalPrice}</span>
+    </div>
+  </div>`;
 
     document.getElementById('spin-result').style.display = 'block';
     document.getElementById('spin-result').classList.add('slide-in');
